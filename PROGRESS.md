@@ -2,8 +2,8 @@
 
 ## Overall Status
 
-**Current stage:** Phase 1 content reviewed; learner study pending  
-**Learning modules:** Phases 0-1 content available; learner completion pending  
+**Current stage:** Phase 2 content reviewed; learner study pending  
+**Learning modules:** Phases 0-2 content available; learner completion pending  
 **Mini AI Factory:** Not started
 
 ## Phase Tracker
@@ -12,7 +12,7 @@
 | --- | --- | --- |
 | 0 | AI Factory fundamentals | Content reviewed; study pending |
 | 1 | Linux for AI infrastructure | Content reviewed; study pending |
-| 2 | Containers | Not started |
+| 2 | Containers | Content reviewed; study pending |
 | 3 | GPU fundamentals | Not started |
 | 4 | CUDA fundamentals | Not started |
 | 5 | NVIDIA GPU Operator | Not started |
@@ -38,4 +38,5 @@
 - The repository skeleton and planning documents are the initial deliverables.
 - Phase 0 learning content and conceptual labs are available; completion has not been claimed until the learner works through its criteria.
 - Phase 1 Linux content and the read-only diagnostic script are available; Linux-host execution and learner completion remain pending.
+- Phase 2 container content, Dockerfile examples, and the GPU diagnostic script are available; Docker-daemon/runtime validation and learner completion remain pending.
 - Kubernetes remains outside the standalone learning scope; fundamentals are studied separately through KodeKloud.

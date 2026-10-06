@@ -1,0 +1,11 @@
+ARG BASE_IMAGE
+FROM ${BASE_IMAGE}
+
+WORKDIR /workspace
+
+USER 0:0
+RUN mkdir -p /workspace/data && chown 10001:10001 /workspace/data
+VOLUME ["/workspace/data"]
+
+USER 10001:10001
+CMD ["/bin/sh", "-c", "if [ -f /workspace/data/marker ]; then printf 'existing marker: '; cat /workspace/data/marker; else printf 'first run\\n' > /workspace/data/marker; fi; printf 'uid='; id -u"]
