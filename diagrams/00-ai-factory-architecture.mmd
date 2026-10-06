@@ -1,0 +1,58 @@
+flowchart TB
+    subgraph Facility[Physical facility]
+        Power[Power distribution and rack power]
+        Cooling[Cooling and environmental systems]
+        Rack[Rack and physical access]
+        Power --> Rack
+        Cooling --> Rack
+    end
+
+    subgraph Node[GPU server]
+        CPU[CPU and system RAM]
+        Store[Local or attached storage]
+        PCIe[PCIe]
+        GPU[GPU and GPU memory]
+        FastLink[NVLink or NVSwitch where supported]
+        NIC[Network interface]
+        CPU --> PCIe --> GPU
+        GPU <--> FastLink
+        CPU --> Store
+        CPU --> NIC
+    end
+
+    Rack --> Node
+    NIC --> Fabric[Ethernet, RoCE, or InfiniBand fabric]
+    Storage[Model artifacts, datasets, checkpoints]
+    Fabric <-->|storage traffic where applicable| Storage
+    PlatformUser[Acme platform user] --> Platform[Authenticated deployment/control API]
+    Platform --> Policy[Identity, quota, policy, and workload control]
+    Policy --> K8s[Kubernetes API, controllers, and scheduler]
+    Operator[NVIDIA GPU Operator control loop]
+    Components[Configured driver, toolkit, device plugin, discovery, telemetry]
+    Kubelet[Kubelet on GPU node]
+    K8s -. desired state and CRDs .-> Operator
+    Operator -. reconciles .-> Components
+    Components -. device plugin registers with .-> Kubelet
+    Kubelet -. reports node resources .-> K8s
+    K8s --> Workload[Scheduled workload pod]
+    Workload --> App[Training, batch, or inference process and user-space libraries]
+    App --> Driver[Host NVIDIA driver and device access]
+    Driver --> GPU
+    Workload <-->|model, data, checkpoint I/O| Storage
+    InferenceClient[Inference client] --> Endpoint[Authenticated endpoint or API gateway]
+    Endpoint -->|route only when this pod serves inference| App
+    App -->|inference response| Endpoint
+    Endpoint --> InferenceClient
+    Workload -. distributed collectives where needed .-> NCCL[NCCL]
+    NCCL -. uses supported transport .-> Fabric
+    NCCL -. intra-node path where supported .-> FastLink
+
+    GPU -. device metrics .-> DCGM[DCGM]
+    DCGM --> Exporter[DCGM Exporter]
+    Exporter --> Prom[Prometheus]
+    Workload -. service and workload metrics .-> Prom
+    Workload -. logs, events, and traces .-> Logs[Approved log/event/trace backends]
+    Prom --> Grafana[Grafana, alerting, and operations]
+    Logs --> Ops[Incident response]
+    Terraform[Terraform] -. provision through provider APIs .-> Infra[Compute, network, storage, cluster resources]
+    Ansible[Ansible] -. configure .-> Node
